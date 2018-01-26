@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PsyChe</title>
+  {% load staticfiles %}
+  <link rel="stylesheet" type="text/css" href="{% static 'psych/css/font.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'psych/css/materialize.min.css' %}">
+  <script type="text/javascript" src="{% static 'psych/js/jquery.js' %}"></script>
+  <script type="text/javascript" src="{% static 'psych/js/materialize.min.js' %}"></script>
+  <link rel="stylesheet" type="text/css" href="{% static 'psych/css/style.css' %}">
+<script type="text/javascript" src="{% static 'channels/js/websocketbridge.js' %}"></script>
+  <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <div id="background-wrap">
+    <div class="bubble x1">
+      <img src="{% static 'psych/images/animate1.svg' %}" class="animate-img img1">
+    </div>
+    <div class="bubble x2">
+      <img src="{% static 'psych/images/animate2.svg' %}" class="animate-img img2">
+    </div>
+    <div class="bubble x3">
+      <img src="{% static 'psych/images/animate3.svg' %}" class="animate-img img3">
+    </div>
+    <div class="bubble x4">
+      <img src="{% static 'psych/images/animate4.svg' %}" class="animate-img img4">
+    </div>
+    <div class="bubble x5">
+      <img src="{% static 'psych/images/animate5.svg' %}" class="animate-img img5">
+    </div>
+    <div class="bubble x6">
+      <img src="{% static 'psych/images/animate1.svg' %}" class="animate-img img6">
+    </div>
+    <div class="bubble x7">
+      <img src="{% static 'psych/images/animate2.svg' %}" class="animate-img img7">
+    </div>
+    <div class="bubble x8">
+      <img src="{% static 'psych/images/animate3.svg' %}" class="animate-img img8">
+    </div>
+    <div class="bubble x9">
+      <img src="{% static 'psych/images/animate4.svg' %}" class="animate-img img9">
+    </div>
+    <div class="bubble x10">
+      <img src="{% static 'psych/images/animate5.svg' %}" class="animate-img img10">
+    </div>
+  </div>
+  <div id="svgs-wrapper">
+    <img src="{% static 'psych/images/main-bg.svg' %}" id="main-bg">
+  </div>
+  <div id="pre-loader">
+    <div class="cube-wrapper">
+      <div class="cube-folding">
+        <span class="leaf1"></span>
+        <span class="leaf2"></span>
+        <span class="leaf3"></span>
+        <span class="leaf4"></span>
+      </div>
+      <span class="loading" data-name="Loading">Loading</span>
+    </div>
+  </div>
+  <nav>
+    <div class="nav-wrapper">
+      <a class="brand-logo center">PsyChe</a>
+      <ul class="right">
+        <li><a href="#" class="nav-link-hover"><i class="material-icons left">exit_to_app</i>Logout</a></li>
+      </ul>
+      <ul class="left">
+        <li><a data-activates="slide-out" class="button-collapse show-on-large hover-side-btn nav-link-hover" id="side-btn"><i class="material-icons">menu</i></a></li>
+      </ul>
+    </div>
+  </nav>
+  <ul id="slide-out" class="side-nav">
+    <li>
+      <div class="user-view">
+        <div class="background">
+          <!-- Insert Background Image -->
+        </div>
+        <!-- Use this image for male users -->
+        <!-- Use user data to determine gender and according use the suitable image -->
+        <a><img class="circle" src="{% static 'psych/images/user-male.svg' %}"></a>
+        <!-- <a><img class="circle" src="{% static 'psych/images/user-female.svg' %}"></a> -->
+        <a><span class="white-text name" id="user-name-span">{{ request.user.username }}</span></a>
+      </div>
+    </li>
+    <li><a class="subheader"><i class="material-icons">group</i>Open Groups</a></li>
+    <li><div class="divider"></div></li>
+    <li><a class="subheader"><i class="material-icons">confirmation_number</i><span id="group-code">{{ room.title }}</span></a></li>
+    <li><div class="divider"></div></li>
+    <li><a id="add_group_btn" onclick="generateGroupCode()" class="waves-effect waves-light btn-large"><i class="material-icons">group_add</i>Create Closed Group</a></li>
+    <li><a class="modal-trigger" href="#instructions"><i class="material-icons left">help</i>Instructions</a></li>
+    <li><a class="modal-trigger" href="#developers"><i class="material-icons left">laptop_mac</i>Developers</a></li>
+  </ul>
+  <div class="tap-target" data-activates="side-btn">
+    <div class="tap-target-content">
+      <h5 id="side-content-msg">Options</h5>
+    </div>
+  </div>
+  <main>
+    <div id="instructions" class="modal modal-fixed-footer">
+      <div class="modal-content">
+        <h4>Instructions</h4>
+        <p>
+          <ul class="collection">
+            <li class="collection-item">1) You get 40 seconds to answer a Question. Failing to which a Blank Answer will be sent as your Response</li>
+            <li class="collection-item">2) You get Points based on How many people selected your Answer. Leaderboard is displayed at the end of the Quiz.</li>
+            <li class="collection-item">3) You get to attempt 7 questions out of the pool of questions.</li>
+            <li class="collection-item">4) Open Groups are created and maintained by server and free to be joined by anyone. Matches in these servers start after 5 people have joined the group.</li>
+            <li class="collection-item">5) Use Closed Group to play with friends.</li>
+          </ul>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <a class="modal-action modal-close waves-effect waves-green btn-flat ">Close</a>
+      </div>
+    </div>
+    <div id="developers" class="modal modal-fixed-footer">
+      <div class="modal-content">
+        <h4>Developers</h4>
+        <div class="row">
+          <div class="col s12 center">
+            <img src="{% static 'psych/images/cc-logo.svg' %}" id="cc-logo-main">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col m6 s12">
+            <div class="card horizontal z-depth-5">
+              <div class="card-image">
+                <img src="{% static 'psych/images/dev.svg' %}" class="developer-img activator">
+              </div>
+              <div class="card-stacked center">
+                <div class="card-content">
+                  <span class="card-title activator grey-text text-darken-4">Arpit Anshuman</span>
+                  <a class="activator details-link">Click for Details</a>
+                </div>
+              </div>
+              <div class="card-reveal">
+                <span class="card-title grey-text text-darken-4">Frontend Developer<i class="material-icons right">close</i></span>
+                <p>Coding Club, BITS Pilani</p>
+              </div>
+            </div>
+            <div class="card horizontal z-depth-5">
+              <div class="card-image">
+                <img src="{% static 'psych/images/dev.svg' %}" class="developer-img activator">
+              </div>
+              <div class="card-stacked center">
+                <div class="card-content">
+                  <span class="card-title activator grey-text text-darken-4">Honnesh Rohmetra</span>
+                  <a class="activator details-link">Click for Details</a>
+                </div>
+              </div>
+              <div class="card-reveal">
+                <span class="card-title grey-text text-darken-4">Frontend Developer<i class="material-icons right">close</i></span>
+                <p>Coding Club, BITS Pilani</p>
+              </div>
+            </div>
+            <div class="card horizontal z-depth-5">
+              <div class="card-image">
+                <img src="{% static 'psych/images/dev.svg' %}" class="developer-img activator">
+              </div>
+              <div class="card-stacked center">
+                <div class="card-content">
+                  <span class="card-title activator grey-text text-darken-4">Vatsal Seth</span>
+                  <a class="activator details-link">Click for Details</a>
+                </div>
+              </div>
+              <div class="card-reveal">
+                <span class="card-title grey-text text-darken-4">Frontend Developer<i class="material-icons right">close</i></span>
+                <p>Coding Club, BITS Pilani</p>
+              </div>
+            </div>
+            <div class="card horizontal z-depth-5">
+              <div class="card-image">
+                <img src="{% static 'psych/images/dev.svg' %}" class="developer-img activator">
+              </div>
+              <div class="card-stacked center">
+                <div class="card-content">
+                  <span class="card-title activator grey-text text-darken-4">Himesh Sogani</span>
+                  <a class="activator details-link">Click for Details</a>
+                </div>
+              </div>
+              <div class="card-reveal">
+                <span class="card-title grey-text text-darken-4">Graphic Designer<i class="material-icons right">close</i></span>
+                <p>Coding Club, BITS Pilani</p>
+              </div>
+            </div>
+          </div>
+          <div class="col m6 s12">
+            <div class="card horizontal z-depth-5">
+              <div class="card-image">
+                <img src="{% static 'psych/images/dev.svg' %}" class="developer-img activator">
+              </div>
+              <div class="card-stacked center">
+                <div class="card-content">
+                  <span class="card-title activator grey-text text-darken-4">Nikhil Khandelwal</span>
+                  <a class="activator details-link">Click for Details</a>
+                </div>
+              </div>
+              <div class="card-reveal">
+                <span class="card-title grey-text text-darken-4">Backend Developer<i class="material-icons right">close</i></span>
+                <p>Coding Club, BITS Pilani</p>
+              </div>
+            </div>
+            <div class="card horizontal z-depth-5">
+              <div class="card-image">
+                <img src="{% static 'psych/images/dev.svg' %}" class="developer-img activator">
+              </div>
+              <div class="card-stacked center">
+                <div class="card-content">
+                  <span class="card-title activator grey-text text-darken-4">Mansi Jain</span>
+                  <a class="activator details-link">Click for Details</a>
+                </div>
+              </div>
+              <div class="card-reveal">
+                <span class="card-title grey-text text-darken-4">Backend Developer<i class="material-icons right">close</i></span>
+                <p>Coding Club, BITS Pilani</p>
+              </div>
+            </div>
+            <div class="card horizontal z-depth-5">
+              <div class="card-image">
+                <img src="{% static 'psych/images/dev.svg' %}" class="developer-img activator">
+              </div>
+              <div class="card-stacked center">
+                <div class="card-content">
+                  <span class="card-title activator grey-text text-darken-4">Vivek R. Golani</span>
+                  <a class="activator details-link">Click for Details</a>
+                </div>
+              </div>
+              <div class="card-reveal">
+                <span class="card-title grey-text text-darken-4">Backend Developer<i class="material-icons right">close</i></span>
+                <p>Coding Club, BITS Pilani</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a class="modal-action modal-close waves-effect waves-green btn-flat ">Close</a>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col s12 black darken-2 main-content" id="start-div">
+          <div class="row">
+            <div class="col s12 center">
+              <span class="header white-text" id="start-div-msg">Enter a Group Code to start playing or create your own Closed Group.</span>
+            </div>
+          </div>
+          <div class="row">
+            <form class="col s12">
+              <div class="row center">
+                <div class="input-field col s6 offset-s3">
+                  <input type="text" name="group_code" id="group_code_field">
+                  <label for="group_code_field">Group Code</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col s12 center">
+                  <a class="waves-effect waves-light btn btn-large" onclick="submitGroupCode()"><i class="material-icons right">send</i>Submit</a>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="col s12 black darken-2 main-content" id="share-code-div">
+          <div id="share-group-code-div-wrapper">
+            <center><div class="box" id="group-code-wrapper">GROUP CODE</div></center>
+            <center class="wait"> Share your group code </center>
+            <div id="fountainG">
+              <div id="fountainG_1" class="fountainG"></div>
+              <div id="fountainG_2" class="fountainG"></div>
+              <div id="fountainG_3" class="fountainG"></div>
+              <div id="fountainG_4" class="fountainG"></div>
+              <div id="fountainG_5" class="fountainG"></div>
+              <div id="fountainG_6" class="fountainG"></div>
+              <div id="fountainG_7" class="fountainG"></div>
+              <div id="fountainG_8" class="fountainG"></div>
+            </div>
+            <div class="row">
+              <div class="col s12 center">
+                <a class="waves-effect waves-light btn btn-large" onclick="startClosedMatch()"><i class="material-icons right">check</i>Start Match</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 black darken-2 main-content" id="please-wait-users-div">
+          <div id="please-wait-for-other-users-wrapper">
+            <span class="cssload-loader"><span class="cssload-loader-inner"></span></span>
+            <center class="wait">Please wait for other users to join we will send you a notification when your match starts....</center>
+          </div>
+        </div>
+        <div class="col s12 black darken-2 main-content" id="question-div">
+          <!-- Question Div Goes Here -->
+          <div id='container' class="center">
+            <div id='title' class="center">
+              <h3>Question</h3>
+            </div>
+            <div>
+              <span class="good_line"></span>
+            </div>
+              <h5 id="ques-text">Irving Berlin composed 3,000 songs, but could not <img src="{% static 'psych/images/loading_icon.gif" class="question-img"></h5>
+            <div>
+              <span class="good_line"></span>
+            </div>
+            <textarea name="styled-textarea" id="styled" onfocus="this.value=''; setbg('#e5fff3');setcolor('red')" onblur="setbg('white')" placeholder="Make up a false answer that you think the other player will believe." required="required"></textarea>
+            <!--<div id='quiz'></div>>-->
+            <div class='button' id='next'><button class="button" onclick="submitAns()" style="vertical-align:middle"><span>SUBMIT</span></button></div>
+          </div>
+        </div>
+        <div id="current-group">Group Code</div>
+        <div class="col s12 black darken-2 main-content" id="please-wait-answers-div">
+          <div id="please-wait-for-other-answers-wrapper">
+            <span class="cssload-loader"><span class="cssload-loader-inner"></span></span>
+            <center class="wait">Please wait for other users to submit their answers..</center>
+          </div>
+        </div>
+        <div class="col s12 black darken-2 main-content" id="answers-div">
+          <!-- Select Answers Div Goes Here -->
+          <div id='container1' class="center">
+            <div id='title1'>
+              <h3>Question</h3>
+            </div>
+            <div>
+              <span class="good_line"></span>
+            </div>
+            <h5 id="ques-text1">Irving Berlin composed 3,000 songs, but could not </h5>
+            <div>
+              <span class="good_line"></span>
+            </div>
+            <h4>Now Pick The Real Answer:</h4>
+            <div id="answer-options-wrapper">
+              <div class="row">
+                <div class="col m1 s0"></div>
+                <div class="col m10 s12 answer-options pink darken-4" userName="userName" onclick="submitSelectedAns(0)">
+                  <h5 class="answer-options-answer">Option 1<h5>
+                </div>
+                <div class="col m1 s0"></div>
+              </div>
+              <div class="row">
+                <div class="col m1 s0"></div>
+                <div class="col m10 s12 answer-options pink darken-4" userName="userName" onclick="submitSelectedAns(1)">
+                  <h5 class="answer-options-answer">Option 1<h5>
+                </div>
+                <div class="col m1 s0"></div>
+              </div>
+              <div class="row">
+                <div class="col m1 s0"></div>
+                <div class="col m10 s12 answer-options pink darken-4" userName="userName" onclick="submitSelectedAns(2)">
+                  <h5 class="answer-options-answer">Option 1<h5>
+                </div>
+                <div class="col m1 s0"></div>
+              </div>
+              <div class="row">
+                <div class="col m1 s0"></div>
+                <div class="col m10 s12 answer-options pink darken-4" userName="userName" onclick="submitSelectedAns(3)">
+                  <h5 class="answer-options-answer">Option 1<h5>
+                </div>
+                <div class="col m1 s0"></div>
+              </div>
+              <div class="row">
+                <div class="col m1 s0"></div>
+                <div class="col m10 s12 answer-options pink darken-4" userName="userName" onclick="submitSelectedAns(4)">
+                  <h5 class="answer-options-answer">Option 1<h5>
+                </div>
+                <div class="col m1 s0"></div>
+              </div>
+              <div class="row">
+                <div class="col m1 s0"></div>
+                <div class="col m10 s12 answer-options pink darken-4" userName="userName" onclick="submitSelectedAns(5)">
+                  <h5 class="answer-options-answer">Option 1<h5>
+                </div>
+                <div class="col m1 s0"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 black darken-2 main-content" id="please-wait-answers-submit-div">
+          <div id="please-wait-for-other-answers-submit-wrapper">
+            <span class="cssload-loader"><span class="cssload-loader-inner"></span></span>
+            <center class="wait">Please wait for other users to choose their answer..</center>
+          </div>
+        </div>
+        <div class="col s12 black darken-2 main-content" id="psyched-div">
+          <!-- You got psyched by and you psyched Div -->
+          <div class="row">
+              <ul class="tabs" id="psych-tabs">
+                <li class="tab col s6 black darken-2"><a class="active" href="#you-got-psyched-div">Got PsyChed</a></li>
+                <li class="tab col s6 black darken-2"><a href="#you-psyched-div">You PsyChed</a></li>
+              </ul>
+          </div>
+          <div class="row">
+            <div class="col s12 center">
+              <span id="psych">
+                PsyChe!
+              </span>
+            </div>
+          </div>
+          <div class="row" id="you-got-psyched-div">
+            <div class="col s12 center">
+              <h5 id="psyched-by-msg">
+                You selected <span id="pyched-by-user">User</span>'s Answer 
+              </h5>
+              <h5 id="correct-ans">
+                Good Job you got the answer correct!
+              </h5>
+            </div>
+          </div>
+          <div class="row" id="you-psyched-div">
+            <div class="col s12 center">
+              <h5 id="you-psyched-msg">Your Answer was selected by</h5>
+              <ul class="collection" id="psyched-user-collection">
+                <li class="collection-item dismissable custom-list">User Name</li>
+              </ul>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col s12 center">
+              <span id="next-round">
+                Next Round begins in <a class="btn btn-floating btn-large cyan pulse" id="countdown-span">10</a>
+              </span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col s12 center" id="leaderboard-show-btn">
+              <a onclick="fetchLeaderboard()" class="waves-effect waves-light btn"><i class="material-icons right">insert_chart</i>Leaderboard</a>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 black darken-2 main-content" id="leaderboard-div">
+          <!-- Leaderboard Div -->
+          <div class="row">
+            <div class="col s12 center">
+              <h4 id="leaderboard-msg">Leaderboard</h4>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col m1 s0"></div>
+            <div class="col m10 s12">
+              <ul class="collection center" id="leaderboard-users">
+                <li class="collection-item avatar center">
+                  <img src="{% static 'psych/images/gold-medal.svg' %}" alt="" class="circle">
+                  <span class="title leaderboard-name">Name</span>
+                </li>
+                <li class="collection-item avatar center">
+                  <img src="{% static 'psych/images/silver-medal.svg' %}" alt="" class="circle">
+                  <span class="title leaderboard-name">Name</span>
+                </li>
+                <li class="collection-item avatar center">
+                  <img src="{% static 'psych/images/bronze-medal.svg' %}" alt="" class="circle">
+                  <span class="title leaderboard-name">Name</span>
+                </li>
+                <li class="collection-item avatar center">
+                  <img src="{% static 'psych/images/normal-medal.svg' %}" alt="" class="circle">
+                  <span class="title leaderboard-name">Name</span>
+                </li>
+                <li class="collection-item avatar center">
+                  <img src="{% static 'psych/images/normal-medal.svg' %}" alt="" class="circle">
+                  <span class="title leaderboard-name">Name</span>
+                </li>
+                <li class="collection-item avatar center">
+                  <img src="{% static 'psych/images/normal-medal.svg' %}" alt="" class="circle">
+                  <span class="title leaderboard-name">Name</span>
+                </li>
+                <li class="collection-item avatar center">
+                  <img src="{% static 'psych/images/normal-medal.svg' %}" alt="" class="circle">
+                  <span class="title leaderboard-name">Name</span>
+                </li>
+              </ul>
+            </div>
+            <div class="col m1 s0"></div>
+          </div>
+        </div>
+        <div class="col s12 black darken-2 main-content" id="starts-in-div">
+          <!-- Starts in 3, 2, 1 Div -->
+          <div class="row center" id="starts-in-content">
+            <div class="col s12">Your Match Starts in<br><br><a class="btn btn-floating btn-large cyan pulse" id="starts-in-count">3</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div class="fixed-action-btn" id="quit-match-btn">
+    <a class="btn-floating btn-large red tooltipped" data-position="top" data-delay="0" data-tooltip="Exit Current Match" onclick="quit_match()">
+      <i class="large material-icons">clear</i>
+    </a>
+  </div>
+  <a class="btn btn-floating btn-large red pulse" id="submit-auto-in-count">40</a>
+  <script type="text/javascript" src="{% static 'psych/js/script.js' %}"></script>
+</body>
+</html>

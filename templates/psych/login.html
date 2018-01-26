@@ -1,0 +1,55 @@
+<html>
+<head>
+<title>PsyChe</title>
+  {% load staticfiles %} 
+   <script type="text/javascript">
+    function loaded() {
+      document.getElementById('pre-loader').style.display = 'none';
+    }
+  </script>
+</head>
+  <body class="bd" onload="loaded()">
+    <link rel="stylesheet" href="{% static 'psych/css/login-style.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Joti+One" rel="stylesheet">
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PsyChe</title>
+    <div id="pre-loader">
+    <div class="cube-wrapper">
+      <div class="cube-folding">
+        <span class="leaf1"></span>
+        <span class="leaf2"></span>
+        <span class="leaf3"></span>
+        <span class="leaf4"></span>
+      </div>
+      <span class="loading" data-name="Loading">Loading</span>
+    </div>
+  </div>
+    <div class="font" id="logo">
+      PsyChe
+    </div>
+    <div class="pos">
+      <div class="cssload-jar">
+        <div class="cssload-mouth"></div>
+        <div class="cssload-neck"></div>
+        <div class="cssload-base">
+          <div class="cssload-liquid"> </div>
+          <div class="cssload-wave"></div>
+          <div class="cssload-wave"></div>
+          <div class="cssload-bubble"></div>
+          <div class="cssload-bubble"></div>
+        </div>
+        <div class="cssload-bubble"></div>
+        <div class="cssload-bubble"></div>
+      </div>
+    </div>
+    <div id="login-link">
+      <a href="accounts/google/login/?process=login" id="login-btn">Login</a>
+    </div>
+    <div id="extropy-logo-wrapper">
+      <img src="{% static 'psych/images/extropy-logo.svg' %}" id="extropy-logo">
+    </div>
+    <div id="cc-logo-wrapper">
+      <img src="{% static 'psych/images/cc-logo.svg' %}" id="cc-logo">
+    </div>
+  </body>
+</html>
