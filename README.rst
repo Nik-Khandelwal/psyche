@@ -1,7 +1,7 @@
 Psyche
 =========
 
-Adapted from the multi-chat room implementation here https://github.com/andrewgodwin/channels-examples/tree/master/multichat.
+Adapted from the multi-chat room implementation [here](https://github.com/andrewgodwin/channels-examples/tree/master/multichat).
 
 Installation
 ------------
