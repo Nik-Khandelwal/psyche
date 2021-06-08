@@ -34,7 +34,7 @@ oauthlib==2.0.3
 olefile==0.44
 pandas==0.20.3
 pigar==0.7.0
-Pillow==4.2.1
+Pillow==8.2.0
 pyDAL==17.8
 python-dateutil==2.6.1
 python-openid==2.2.5
